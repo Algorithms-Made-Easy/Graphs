@@ -1,0 +1,62 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    public static void main(String[] args) {
+        int noOfVertices = 8;
+        int noOfEdges = 8;
+        
+        List<Integer>[] adj=new ArrayList[noOfVertices];
+        
+        List<Integer> list=new ArrayList<>();
+        list.add(1);
+        adj[0]=list;
+        
+        list=new ArrayList<>();
+        list.add(2);
+        list.add(7);
+        adj[1]=list;
+        
+        list=new ArrayList<>();
+        list.add(3);
+        list.add(4);
+        adj[2]=list;
+        
+        //adj[3]=Arrays.asList(new int[]{});
+        
+        list=new ArrayList<>();
+        list.add(5);
+        list.add(6);
+        adj[4]=list;
+        
+        //adj[5]=Arrays.asList(new int[]{});
+        //adj[6]=Arrays.asList(new int[]{});
+        
+        list=new ArrayList<>();
+        list.add(4);
+        adj[7]=list;
+        
+        boolean[] visited = new boolean[noOfVertices];
+        
+        Queue<Integer> q=new LinkedList<>();
+        q.add(0);
+        
+        while(!q.isEmpty()){
+            int size=q.size();
+            
+            Set<Integer> set=new HashSet<>();
+            while(size-->0){
+                int val=q.remove();
+                System.out.println(val+" -> "+(char)('A'+val));
+                visited[val]=true;
+                
+                if(adj[val]!=null){
+                    for(int i:adj[val]){
+                        if(!visited[i])
+                            set.add(i);
+                    }
+                }
+                
+            }
+            q.addAll(new ArrayList<Integer>(set));
+        }
+    }    
+}
