@@ -1,0 +1,67 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    public static void main(String[] args) {
+        int noOfVertices = 5;
+        int[][] adj=new int[][]{
+            {0,1,1,0,1},
+            {0,0,0,1,0},
+            {0,0,0,1,0},
+            {0,0,0,0,0},
+            {0,0,0,0,0}
+        };
+        topologicalSort(noOfVertices,adj);
+        
+        //Graph with Cycle
+        noOfVertices = 6;
+        adj=new int[][]{
+            {0,1,1,0,1,0},
+            {0,0,0,1,0,0},
+            {0,0,0,1,0,0},
+            {0,0,0,0,0,0},
+            {0,0,0,0,0,1},
+            {0,0,0,0,1,0}
+        };
+        topologicalSort(noOfVertices,adj);
+    }   
+    
+    static void topologicalSort(int noOfVertices,int[][] adj){
+        int[] indegree=new int[noOfVertices];
+        
+        for(int i=0;i<noOfVertices;i++){
+            for(int j=0;j<noOfVertices;j++){
+                if(adj[i][j]==1){
+                    indegree[j]++;
+                }
+            }
+        }
+        
+        System.out.println("In-degree Array : "+Arrays.toString(indegree));
+        
+        Queue<Integer> q=new LinkedList<>();
+        
+        for(int i=0;i<noOfVertices;i++){
+            if(indegree[i]==0){
+                q.add(i);
+            }
+        }
+        int topologicalOrder=0;
+        System.out.println("Topological Ordering");
+        while(!q.isEmpty()){
+            int vertex=q.remove();
+            System.out.println(vertex+" -> "+(char)(vertex + 'A'));
+            topologicalOrder++;
+            for(int i=0;i<noOfVertices;i++){
+                if(adj[vertex][i]==1){
+                    indegree[i]--;
+                    if(indegree[i]==0){
+                        q.add(i);
+                    }
+                }
+            }
+        }
+        
+        if(topologicalOrder!=noOfVertices){
+            System.out.println("Graph has Cycle");
+        }
+    }
+}
