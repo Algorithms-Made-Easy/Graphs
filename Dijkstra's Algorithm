@@ -1,0 +1,66 @@
+public class Main {
+    public static void main(String[] args) {
+        int noOfVertices = 5;
+        int startVertex=0;  // A is start vertex
+        
+        List<Pair<Integer,Integer>>[] adj=new ArrayList[noOfVertices];
+        
+        //Pair(vertex, weight)
+        List<Pair<Integer,Integer>> list=new ArrayList<>();
+        list.add(new Pair(1,4));
+        list.add(new Pair(2,1));
+        adj[0]=list;
+        
+        list=new ArrayList<>();
+        list.add(new Pair(4,4));
+        adj[1]=list;
+        
+        list=new ArrayList<>();
+        list.add(new Pair(1,2));
+        list.add(new Pair(3,4));
+        adj[2]=list;
+        
+        list=new ArrayList<>();
+        list.add(new Pair(4,4));
+        adj[3]=list;
+        
+        list=new ArrayList<>();
+        adj[4]=list;
+        
+        int[] path = new int[noOfVertices];
+        int[] distance = new int[noOfVertices];
+        
+        Arrays.fill(distance,-1); // Intialize distance array
+        
+        distance[startVertex]=0; // Making distance for start vertex 0
+        path[startVertex]=startVertex; // Updating path for start vertex to itself
+        
+        PriorityQueue<Pair<Integer,Integer>> q=new PriorityQueue<>((a,b) -> a.getValue()-b.getValue());
+        q.add(new Pair<>(startVertex,0));
+        
+        while(!q.isEmpty()){
+            Pair<Integer,Integer> vertexPair=q.remove();
+            Integer vertex=vertexPair.getKey();
+
+            List<Pair<Integer,Integer>> adjVertices=adj[vertex];
+
+            for(Pair<Integer,Integer> adjPair: adjVertices){
+                int adjVertex=adjPair.getKey();
+                int weight=adjPair.getValue();
+                
+                int newDistance=distance[vertex] + weight;
+                if(distance[adjVertex]==-1 || distance[adjVertex]>newDistance){
+                    distance[adjVertex]=newDistance;
+                    path[adjVertex]=vertex;
+                    q.add(new Pair<>(adjVertex,distance[adjVertex]));
+                }
+            }
+        }
+        
+        System.out.println("Distance from "+(char)(startVertex+'A')+" :");
+        for(int i=0;i<noOfVertices; i++){
+            System.out.print("Distance to "+(char)(i+'A')+" is "+distance[i]);
+            System.out.println(" from path "+(char)(path[i]+'A'));
+        }
+    }    
+}
