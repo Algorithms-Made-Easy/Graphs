@@ -1,0 +1,61 @@
+    public class Main {
+        public static void main(String[] args) {
+            int noOfVertices = 5;
+
+            List<int[]> adj=new ArrayList<>();
+            //int[] = {source, destination, weight}
+            adj.add(new int[]{0,1,4});
+            adj.add(new int[]{0,2,1});
+            adj.add(new int[]{1,2,2});
+            adj.add(new int[]{1,4,5});
+            adj.add(new int[]{2,3,4});
+            adj.add(new int[]{3,4,3});
+
+            PriorityQueue<int[]> q=new PriorityQueue<>((a,b) -> a[2]-b[2]);
+
+            for(int[] edges:adj){
+                q.add(edges);
+            }
+
+            List<int[]> mst =new ArrayList<>();
+
+            while(!q.isEmpty() && mst.size()<noOfVertices-1){
+                int[] edge=q.poll();
+
+                int source=edge[0];
+                int destination=edge[1];
+
+                if(!isCycle(source,destination,mst,new boolean[mst.size()])){
+                    mst.add(edge);
+                }
+            }
+
+            System.out.println("MST formed by edges :");
+            for(int[] edge:mst){
+                    System.out.println((char)(edge[0]+'A')+" - "+(char)(edge[1]+'A')+" --> "+edge[2]);
+            }
+        }    
+
+        static boolean isCycle(int source, int destination, List<int[]> mst, boolean[] visited){
+            if(source==destination){
+                return true;
+            }
+            boolean flag=false;
+            for(int i=0;i<mst.size();i++){
+                int[] edge=mst.get(i);
+                if(!visited[i]){
+                    if(source==edge[0]){
+                        visited[i]=true;
+                        flag=flag || isCycle(edge[1],destination,mst,visited);
+                        visited[i]=false;
+                    }
+                    if(source==edge[1]){
+                        visited[i]=true;
+                        flag=flag || isCycle(edge[0],destination,mst,visited);
+                        visited[i]=false;
+                    }
+                }
+            }
+            return flag;
+        }
+    }
