@@ -1,0 +1,50 @@
+    public class Main {
+        
+        static int[] low,dfsnum;
+        static int num=1;
+        static int noOfVertices;
+        
+        public static void main(String[] args) {
+            
+            noOfVertices=7;
+            
+            int[][] adjMatrix=new int[][]{
+                {0,1,0,1,0,0,0},
+                {1,0,1,0,0,0,0},
+                {0,1,0,1,0,0,1},
+                {1,0,1,0,0,1,0},
+                {0,0,0,0,0,1,0},
+                {0,0,0,1,1,0,0},
+                {0,0,1,0,0,0,0}
+            };
+            low=new int[noOfVertices];
+            dfsnum=new int[noOfVertices];
+            
+            System.out.println("Cut Edges / Cut Bridges are: ");
+            for (int i = 0; i < noOfVertices; i++) {
+                if (dfsnum[i] == 0) {
+                    cutVertices(adjMatrix,i,i);
+                }
+            }
+        }
+        
+        static void cutVertices(int[][] adjMatrix, int vertex,int pre){
+            low[vertex]=dfsnum[vertex]=num++;
+            
+            for(int v=0;v<noOfVertices;v++){
+                if(v==pre) continue;
+                if(adjMatrix[vertex][v]==1) {
+                    if(dfsnum[v]!=0){
+                        low[vertex]=Math.min(low[vertex],dfsnum[v]);
+                    }
+                    else{
+                        cutVertices(adjMatrix,v,vertex);
+                        low[vertex] = Math.min(low[vertex],low[v]);
+                        if(low[v]>dfsnum[vertex]){
+                            System.out.println((char)('A'+vertex) +" ----- "+(char)('A'+v));
+                        }
+                    }
+                }
+            }
+        }
+}
