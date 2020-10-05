@@ -1,0 +1,59 @@
+    public class Main {
+        
+        static int[] low,dfsnum;
+        static int num=1;
+        static int noOfVertices;
+        static boolean[] art;
+        
+        public static void main(String[] args) {
+            
+            noOfVertices=7;
+            
+            int[][] adjMatrix=new int[][]{
+                {0,1,0,1,0,0,0},
+                {1,0,1,0,0,0,0},
+                {0,1,0,1,0,0,1},
+                {1,0,1,0,1,1,0},
+                {0,0,0,1,0,1,0},
+                {0,0,0,1,1,0,0},
+                {0,0,1,0,0,0,0}
+            };
+            low=new int[noOfVertices];
+            dfsnum=new int[noOfVertices];
+            art=new boolean[noOfVertices];
+            
+            cutVertices(adjMatrix,0,-1);
+            
+            System.out.println("Cut vertex / articulation points are: ");
+            for(int i=0;i<noOfVertices;i++){
+                if(art[i]){
+                    System.out.println((char)('A'+i));
+                }
+            }
+        }
+        
+        static void cutVertices(int[][] adjMatrix, int vertex,int p){
+            low[vertex]=dfsnum[vertex]=num++;
+            
+            int child=0;
+            for(int v=0;v<noOfVertices;v++){
+                if(adjMatrix[vertex][v]==1) {
+                    if(dfsnum[v]!=0){
+                        low[vertex]=Math.min(low[vertex],dfsnum[v]);
+                    }
+                    else{
+                        child++;
+                        cutVertices(adjMatrix,v,vertex);
+                        low[vertex] = Math.min(low[vertex],low[v]);
+                        if(low[v]>=dfsnum[vertex]){
+                            art[vertex]=true;
+                        }
+                    }
+                }
+            }
+            
+            if(p==-1 && child<2){
+                art[vertex]=false;
+            }
+        }
+}
