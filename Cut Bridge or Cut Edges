@@ -23,12 +23,12 @@
             System.out.println("Cut Edges / Cut Bridges are: ");
             for (int i = 0; i < noOfVertices; i++) {
                 if (dfsnum[i] == 0) {
-                    cutVertices(adjMatrix,i,i);
+                    cutEdges(adjMatrix,i,i);
                 }
             }
         }
         
-        static void cutVertices(int[][] adjMatrix, int vertex,int pre){
+        static void cutEdges(int[][] adjMatrix, int vertex,int pre){
             low[vertex]=dfsnum[vertex]=num++;
             
             for(int v=0;v<noOfVertices;v++){
@@ -38,7 +38,7 @@
                         low[vertex]=Math.min(low[vertex],dfsnum[v]);
                     }
                     else{
-                        cutVertices(adjMatrix,v,vertex);
+                        cutEdges(adjMatrix,v,vertex);
                         low[vertex] = Math.min(low[vertex],low[v]);
                         if(low[v]>dfsnum[vertex]){
                             System.out.println((char)('A'+vertex) +" ----- "+(char)('A'+v));
