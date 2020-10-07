@@ -1,0 +1,123 @@
+public class Main {
+
+    public static void main(String[] args) {
+
+        int noOfVertices=5;
+
+        int[][] adjMatrix=new int[][]{
+            {0,1,0,0,1},
+            {1,0,1,1,0},
+            {0,1,0,1,0},
+            {0,1,1,0,1},
+            {1,0,0,1,0}
+        };
+        isEuler(adjMatrix,noOfVertices);
+      
+        adjMatrix=new int[][]{
+            {0,1,0,0,1},
+            {1,0,1,0,0},
+            {0,1,0,1,0},
+            {0,0,1,0,1},
+            {1,0,0,1,0}
+        };
+        isEuler(adjMatrix,noOfVertices);
+      
+        adjMatrix=new int[][]{
+            {0,1,1,0,1},
+            {1,0,1,1,0},
+            {1,1,0,1,0},
+            {0,1,1,0,1},
+            {1,0,0,1,0}
+        };
+        isEuler(adjMatrix,noOfVertices);
+    }
+
+    static void isEuler(int[][] adjMatrix,int noOfVertices){
+        //if 0, then it is not a euler graph
+        //if 1, then it is a Euler path
+        //if 2, then it is a Euler Cycle
+        int flag = isEulerianGraph(adjMatrix,noOfVertices);
+        if(flag==0){
+            System.out.println("Graph is not Eulerian");
+        }
+        else if(flag==1){
+            System.out.println("Graph has Eulerian Path");
+        }
+        else{
+            System.out.println("Graph has Eulerian Cycle");
+        }
+    }
+
+    static int isEulerianGraph(int[][] adjMatrix,int noOfVertices){
+
+        int[] degreeOfVertices=findDegree(adjMatrix,noOfVertices);
+        boolean connected=isConnected(adjMatrix,noOfVertices,degreeOfVertices);
+
+        if(!connected){
+            return 0;
+        }
+
+        int noOfOddVertices=0;
+
+        for(int degree:degreeOfVertices){
+            if(degree%2!=0){
+                noOfOddVertices++;
+            }
+        }
+
+        if(noOfOddVertices>2){
+            return 0;
+        }
+
+        return noOfOddVertices == 2 ? 1 : 2;
+    }
+
+    static int[] findDegree(int[][] adjMatrix,int noOfVertices){
+        int[] degree=new int[noOfVertices];
+
+        for(int i=0;i<noOfVertices;i++){
+            for(int j=0;j<noOfVertices;j++){
+                if(i!=j && adjMatrix[i][j]==1){
+                    degree[i]++;
+                }
+            }
+        }
+
+        return degree;
+    }
+
+    static boolean isConnected(int[][] adjMatrix,int noOfVertices,int[] degreeOfVertices){
+        boolean[] visited=new boolean[noOfVertices];
+
+        int i=0;
+        for(;i<noOfVertices;i++){
+                if(degreeOfVertices[i]>0){
+                    break;
+                }
+            }
+
+        if(i==noOfVertices){
+            return true;
+        }
+
+        dfs(adjMatrix,visited,i,noOfVertices);
+
+        for(int vertex=0;vertex<noOfVertices;vertex++){
+            if(!visited[vertex] && degreeOfVertices[vertex]>0){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    static void dfs(int[][] adjMatrix,boolean[] visited, int vertex,int noOfVertices){
+        visited[vertex]=true;
+
+        for(int i=0;i<noOfVertices;i++){
+            if(i!=vertex && adjMatrix[vertex][i]==1 && !visited[i]){
+                 dfs(adjMatrix,visited,i,noOfVertices);
+            }
+        }
+    }          
+}
