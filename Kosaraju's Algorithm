@@ -1,0 +1,80 @@
+public class Main {
+
+    static boolean[] visited;
+    static int[][] adjMatrix;
+    static int noOfVertices;
+    
+    public static void main(String[] args) {
+
+        noOfVertices=4;
+        adjMatrix=new int[][]{
+            {0,1,0,1},
+            {0,0,1,0},
+            {1,0,0,1},
+            {0,0,0,0}
+        };
+        System.out.println("Each line is a list of vertex which form \na strongly connected component:");
+        stronglyConnected();
+    }
+    
+    static void stronglyConnected(){
+        visited=new boolean[noOfVertices];
+        Stack<Integer> stack=new Stack<>();
+        
+        //First DFS
+        for(int vertex=0;vertex<noOfVertices;vertex++){
+            if(!visited[vertex]){
+                findOrder(vertex,stack);
+            }
+        }
+        
+        //Reverse All edges
+        //Now edge is represented by 2 insted of 1
+        transpose();     
+        
+        //Second DFS
+        visited=new boolean[noOfVertices];
+        
+        //Printing all the strongly connected components
+        while(!stack.isEmpty()){
+            int vertex = stack.pop();
+            if(!visited[vertex]){
+                dfs(vertex);
+                System.out.println("");
+            }
+        }
+    }
+    
+    static void findOrder(int vertex,Stack<Integer> stack){
+        visited[vertex]=true;
+        
+        for(int v=0;v<noOfVertices;v++){
+            if(adjMatrix[vertex][v]==1 && !visited[v]){
+                findOrder(v,stack);
+            }
+        }
+        stack.push(vertex);
+    }
+    
+    static void transpose(){
+        for(int i=0;i<noOfVertices;i++){
+            for(int j=0;j<noOfVertices;j++){
+                if(adjMatrix[i][j]==1){
+                    adjMatrix[i][j]=0;
+                    adjMatrix[j][i]=2;
+                }
+            }
+        }
+    }
+    
+    static void dfs(int vertex){
+        visited[vertex] = true;
+        System.out.print(vertex+" ");
+        
+        for(int v=0;v<noOfVertices;v++){
+            if(adjMatrix[vertex][v]==2 && !visited[v]){
+                dfs(v);
+            }
+        }
+    }
+}
