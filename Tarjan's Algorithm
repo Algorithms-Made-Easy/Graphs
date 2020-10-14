@@ -1,0 +1,69 @@
+public class Main {
+
+    static boolean[] visited;
+    static int[][] adjMatrix;
+    static int noOfVertices;
+    static int[] dfsnum,low;
+    static int num=0;
+    
+    public static void main(String[] args) {
+
+        noOfVertices=4;
+        adjMatrix=new int[][]{
+            {0,1,0,1},
+            {0,0,1,0},
+            {1,0,0,1},
+            {0,0,0,0}
+        };
+        System.out.println("Each line is a list of vertex which form \na strongly connected component:");
+        stronglyConnected();
+    }
+    
+    static void stronglyConnected(){
+        visited=new boolean[noOfVertices];
+        Stack<Integer> stack=new Stack<>();
+        dfsnum = new int[noOfVertices];  
+        low = new int[noOfVertices];  
+        
+        for(int i = 0;i < noOfVertices; i++) { 
+            dfsnum[i] = -1; 
+            low[i] = -1; 
+        }
+        
+        for(int vertex = 0;vertex < noOfVertices; vertex++) { 
+            if(dfsnum[vertex] == -1){
+                findSC(vertex,stack);
+            }
+        }
+    }
+    
+    static void findSC(int vertex, Stack<Integer> stack){
+        dfsnum[vertex] = low[vertex] = num++;
+        stack.push(vertex);
+        visited[vertex] = true;
+        
+        for(int v = 0; v < noOfVertices; v++) { 
+            if(adjMatrix[vertex][v]==1){
+                if(dfsnum[v] == -1){
+                    findSC(v,stack);
+                    low[vertex]=Math.min(low[v],low[vertex]);
+                }
+                else if(visited[v]){
+                    low[vertex]=Math.min(dfsnum[v],low[vertex]);
+                }
+            }
+        }
+        
+        int w = -1;  
+        if (low[vertex] == dfsnum[vertex]) 
+        { 
+            while (w != vertex) 
+            {  
+                w = (int)stack.pop(); 
+                System.out.print(w + " "); 
+                visited[w] = false; 
+            } 
+            System.out.println();  
+        } 
+    }
+}
