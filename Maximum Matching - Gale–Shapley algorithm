@@ -1,0 +1,93 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    
+    //Number of men and women
+    static int N = 4;
+    public static void main(String[] args) {
+        int prefer[][] = new int[][]{
+            {7, 5, 6, 4},  
+            {5, 4, 6, 7},  
+            {4, 5, 6, 7},  
+            {4, 5, 6, 7},  
+            {0, 1, 2, 3},  
+            {0, 1, 2, 3},  
+            {0, 1, 2, 3},  
+            {0, 1, 2, 3}}; 
+        stableMarriage(prefer);
+    }
+    
+    static void stableMarriage(int[][] prefer){
+        
+        // Hold the partner for every woman
+        int partner[] = new int[N];
+        
+        // Hold flag if the man is engaged or not
+        boolean engaged[] = new boolean[N];
+        
+        //No partner intially
+        Arrays.fill(partner,-1);
+        
+        //Intially there are N free Men
+        int freeMen = N;
+        
+        //Loop till there are no free man left
+        while(freeMen > 0){
+            
+            //Find the first free man
+            int man = 0;
+            for(;man<N;man++)
+                if(engaged[man] == false)
+                    break;
+            
+            //loop on all the women for that man
+            for(int i=0; i < N; i++ ){
+                
+                //Finding the priority for the woman 
+                int womenPrefer = prefer[man][i];
+                
+                // If the selected woman has no partner than enagage
+                // man and womenPrefer
+                if(partner[womenPrefer-N] == -1){
+                    partner[womenPrefer-N] = man;
+                    engaged[man] = true;
+                    freeMen--;
+                }
+                // If the woman has partner already than,
+                // find if the priority of man is less than current partner
+                // If yes, change the partner of women to man and
+                // update the enagaged status of current man to false
+                else{
+                    int currentPartner = partner[womenPrefer-N];       if(doesWomenPreferMenOverCurrentPartner(prefer,womenPrefer,man,currentPartner)){
+                        partner[womenPrefer-N] = man;
+                        engaged[man]=true;
+                        engaged[currentPartner]=false;
+                    }
+                }
+                
+                // if the man is enagaged than break the loop
+                if(engaged[man] == true ){
+                    break;
+                }
+            }
+        }
+        
+        //Print the woman and man relationship
+        System.out.println("Women ---> Men");
+        for(int i=0;i<N;i++){
+            System.out.println(N+i+"     --->   "+partner[i]);
+        }
+    }
+    
+    // Find if the womean prefer new man to current partner or not.
+    static boolean doesWomenPreferMenOverCurrentPartner(int[][] prefer, int women, int newMan, int currentMan){
+        for(int i=0;i<N;i++){
+            if(prefer[women][i] == currentMan){
+                return false;
+            }
+            if(prefer[women][i] == newMan){
+                return true;
+            }
+        }
+        return true;
+    }
+}
